@@ -1,0 +1,8 @@
+#빌드 폴더#
+bin/
+obj/
+#테스트 프로젝트#
+ConsoleApp1/
+Test/
+.vs/
+.txt
