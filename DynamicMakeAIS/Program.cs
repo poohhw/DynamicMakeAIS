@@ -44,7 +44,7 @@ namespace DynamicMakeAIS
             int MAX_SIZE = 1024;
             NetworkStream stream = tc.GetStream();
 
-            byte[] byteInfoMsg = Encoding.Default.GetBytes("데이터 수신을 받으려면 1을 입력하세요. 수신종료 시 Q를 입력하세요." + Environment.NewLine);
+            byte[] byteInfoMsg = Encoding.Default.GetBytes("데이터 수신을 받으려면 1을 입력하세요!. 수신종료 시 Q를 입력하세요." + Environment.NewLine);
             await stream.WriteAsync(byteInfoMsg, 0, byteInfoMsg.Length).ConfigureAwait(false);
 
             while (tc.Connected)
@@ -52,7 +52,7 @@ namespace DynamicMakeAIS
                 var buff = new byte[MAX_SIZE];
                 //var nbytes = await stream.ReadAsync(buff, 0, buff.Length).ConfigureAwait(false);
 
-                int nRead = 0;
+                int nRead = 0;   
                 //string msg = string.Empty;
                 if (tc.GetClientState() == TcpState.Established)
                 {

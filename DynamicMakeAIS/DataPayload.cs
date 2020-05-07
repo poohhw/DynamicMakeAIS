@@ -9,9 +9,9 @@ namespace DynamicMakeAIS
 {
     public enum MID
     {
-      Korea = 440,
-      Japan = 432
-       
+        Korea = 440,
+        Japan = 432
+
     }
     public class DataPayload
     {
@@ -35,8 +35,7 @@ namespace DynamicMakeAIS
         public string _DataPayLoad { get; set; }
 
         private Random rnMMSI = new Random();
-        private Random rLat = new Random();
-        private Random rLong = new Random();
+
         private Random rMessage = new Random();
         //private Random rn;
         public DataPayload()
@@ -80,12 +79,12 @@ namespace DynamicMakeAIS
             this._RAIMflag = 0;
             this._Radiostatus = 0;
 
-  
-            sb.Append(Convert.ToString(_MessageType, 2).FillBit(6));  
-            sb.Append(Convert.ToString(_RepeatIndicator, 2).FillBit(2));    
-            sb.Append(Convert.ToString(_MMSI, 2).FillBit(30));      
-            sb.Append(Convert.ToString(_NavigationStatus, 2).FillBit(4));   
-            sb.Append(Convert.ToString(_ROT, 2).FillBit(8));           
+
+            sb.Append(Convert.ToString(_MessageType, 2).FillBit(6));
+            sb.Append(Convert.ToString(_RepeatIndicator, 2).FillBit(2));
+            sb.Append(Convert.ToString(_MMSI, 2).FillBit(30));
+            sb.Append(Convert.ToString(_NavigationStatus, 2).FillBit(4));
+            sb.Append(Convert.ToString(_ROT, 2).FillBit(8));
             sb.Append(Convert.ToString(_SOG, 2).FillBit(10));
             sb.Append(Convert.ToString(_PositionAccuracy, 2).FillBit(1));
             sb.Append(Convert.ToString(Convert.ToInt32((_LongLat[1] * 600000d)), 2).FillBit(28));
@@ -111,7 +110,7 @@ namespace DynamicMakeAIS
             {
                 int num = 0;
                 char c;
-                if(Convert.ToInt32(DataBinary.Substring(idx, 6), 2) >= 40)
+                if (Convert.ToInt32(DataBinary.Substring(idx, 6), 2) >= 40)
                 {
                     num = 8;
                 }
@@ -125,7 +124,7 @@ namespace DynamicMakeAIS
             _DataPayLoad = new string(arrData);
 
             return _DataPayLoad;
-             
+
         }
 
         /// <summary>
@@ -135,15 +134,18 @@ namespace DynamicMakeAIS
         public double[] CreateCoodinate()
         {
             double[] arrCoodinate = new double[2];
-         
-            double nLat = 34.5;
-            double nLong = 129.7;
 
-            double dLat = rLat.NextDouble() * 0.1d;
-            double dLong = rLong.NextDouble() * 0.1d;
+            Random rLat = new Random();
+            //Random rLong = new Random();
 
-            string strLat = Math.Round((nLat + dLat),5).ToString();
-            string strLong = Math.Round((nLong + dLong),5).ToString();
+            int nLat = rLat.Next(34, 39);
+            int nLong = rLat.Next(125, 131);
+
+            double dLat = rLat.NextDouble();
+            double dLong = rLat.NextDouble();
+
+            string strLat = Math.Round((nLat + dLat), 5).ToString();
+            string strLong = Math.Round((nLong + dLong), 5).ToString();
 
             arrCoodinate[0] = Convert.ToDouble(strLat);
             arrCoodinate[1] = Convert.ToDouble(strLong);
@@ -158,7 +160,7 @@ namespace DynamicMakeAIS
         public double CreateCOG(int pSeed)
         {
             Random rn = new Random(pSeed);
-            string vCOG = string.Empty;            
+            string vCOG = string.Empty;
             int nCOG = rn.Next(0, 360);
 
             Random rnd = new Random();
@@ -207,12 +209,12 @@ namespace DynamicMakeAIS
 
             Random rn = new Random();
 
-            vSOG = NextFloat(rn,0,100).ToString();
+            vSOG = NextFloat(rn, 0, 100).ToString();
 
             return Convert.ToDouble(vSOG);
         }
 
-        public float NextFloat(Random random,int MinValue,int MaxValue)
+        public float NextFloat(Random random, int MinValue, int MaxValue)
         {
             double val = random.NextDouble(); // range 0.0 to 1.0
             val -= 0.5; // expected range now -0.5 to +0.5
