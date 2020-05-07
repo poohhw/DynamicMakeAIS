@@ -39,7 +39,7 @@ namespace DynamicMakeAIS
             }
         }
 
-        static void AsyncTcpProcess(object obj)
+        async static void AsyncTcpProcess(object obj)
         {
 
             TcpClient tc = obj as TcpClient;
@@ -51,44 +51,18 @@ namespace DynamicMakeAIS
             int MAX_SIZE = 1024;
             NetworkStream stream = tc.GetStream();
 
-            ////byte[] byteInfoMsg = Encoding.Default.GetBytes("데이터 수신을 받으려면 1을 입력하세요!. 수신종료 시 Q를 입력하세요." + Environment.NewLine);
-            ////await stream.WriteAsync(byteInfoMsg, 0, byteInfoMsg.Length).ConfigureAwait(false);
 
             while (tc.Connected)
             {
                 var buff = new byte[MAX_SIZE];
-                //var nbytes = await stream.ReadAsync(buff, 0, buff.Length).ConfigureAwait(false);
 
-           
-                //string msg = string.Empty;
                 if (tc.GetClientState() == TcpState.Established)
                 {
-                    //Console.WriteLine($"{msg} at {DateTime.Now}");
+
                     //메세지 전송                    
-                    Send(tc, stream);
+                    await Send(tc, stream);
 
-                    ////클라이언트 다음 메세지 대기. 
-                    //bool bQuit = await Receive(tc, stream);
-                    //if (!bQuit)
-                    //{
-                    //    Console.WriteLine("보내기 종료");
 
-                    //    break;
-                    //}
-
-                    //while ((nRead = await stream.ReadAsync(buff, 0, buff.Length)) != 0)
-                    //{
-                    //    string msg  = Encoding.ASCII.GetString(buff, 0, nRead);
-
-                    //    if (msg.Equals("1"))
-                    //    {
-
-                    //    }
-                    //    else
-                    //    {
-                    //        break;
-                    //    }
-                    //}
                 }
                 else
                 {
@@ -124,68 +98,29 @@ namespace DynamicMakeAIS
 
         private static async Task Send(TcpClient tc, NetworkStream stream)
         {
-
-            //송신
-            //while (true)
-            //{
             Thread.Sleep(500);
-                TcpState tcpState = tc.GetClientState();
-                if (!tc.Connected) return;
-                if (tcpState == TcpState.Established)
-                {
-                    DataPayload dp = new DataPayload();
-
-                    //string SendMessage = $"!AIVDM,1,1,,B,{dp.CreateDataPayLoadBinary()},0";
-
-                    //SendMessage = SendMessage + "*" + MakeChecksum(SendMessage);
-
-
-                    byte[] byteMsg = Encoding.Default.GetBytes(SendMessage + Environment.NewLine);
-                    await stream.WriteAsync(byteMsg, 0, byteMsg.Length).ConfigureAwait(false);
-                   
-                }
-                //else
-                //{
-                //    return;
-                //}
-           // }
+            TcpState tcpState = tc.GetClientState();
+            if (!tc.Connected) return;
+            if (tcpState == TcpState.Established)
+            {
+                DataPayload dp = new DataPayload();
+                byte[] byteMsg = Encoding.Default.GetBytes(SendMessage + Environment.NewLine);
+                await stream.WriteAsync(byteMsg, 0, byteMsg.Length).ConfigureAwait(false);
+            }
         }
 
         private static void CreateAISMessage()
         {
             while (true)
             {
-                //Thread.Sleep(300);
-                //Console.WriteLine("생성중...");
-                if (ConnectedClients.Count == 0) continue;
+                Thread.Sleep(500);
+                //Console.WriteLine("..");
                 //메세지 생성.
                 DataPayload dp = new DataPayload();
                 SendMessage = $"!AIVDM,1,1,,B,{dp.CreateDataPayLoadBinary()},0";
                 SendMessage = SendMessage + "*" + MakeChecksum(SendMessage);
             }
-                //byte[] byteMsg = Encoding.Default.GetBytes(SendMessage + Environment.NewLine);
 
-                //접속된 클라이언트에 메세지 보내기.
-            //    foreach (TcpClient client in ConnectedClients)
-            //    {
-            //        try
-            //        {
-            //            TcpState tcpState = client.GetClientState();
-            //            using (NetworkStream stream = client.GetStream())
-            //            {
-            //                if (tcpState == TcpState.Established) //연결 유지 상태 확인.
-            //                {
-            //                    stream.Write(byteMsg, 0, byteMsg.Length);
-
-            //                }
-            //            }
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            Console.WriteLine(ex.Message);
-            //        }
-            //    }
-            //}
         }
 
         public static string MakeChecksum(string pData)
