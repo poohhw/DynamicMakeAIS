@@ -56,24 +56,26 @@ namespace DynamicMakeAIS
                 //string msg = string.Empty;
                 if (tc.GetClientState() == TcpState.Established)
                 {
+
+                    Console.WriteLine($"{msg} at {DateTime.Now}");
+                    //메세지 전송
+                    Send(tc, stream);
+
+                    //클라이언트 다음 메세지 대기.
+                    bool bQuit = await Receive(tc, stream);
+                    if (!bQuit)
+                    {
+                        Console.WriteLine("보내기 종료");
+
+                        break;
+                    }
+
                     while ((nRead = await stream.ReadAsync(buff, 0, buff.Length)) != 0)
                     {
                         string msg  = Encoding.ASCII.GetString(buff, 0, nRead);
 
                         if (msg.Equals("1"))
                         {
-                            Console.WriteLine($"{msg} at {DateTime.Now}");
-                            //메세지 전송
-                            Send(tc, stream);
-
-                            //클라이언트 다음 메세지 대기.
-                            bool bQuit = await Receive(tc, stream);
-                            if (!bQuit)
-                            {
-                                Console.WriteLine("보내기 종료");
-                                
-                                break;
-                            }
 
                         }
                         else
